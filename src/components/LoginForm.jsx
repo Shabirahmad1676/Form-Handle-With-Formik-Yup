@@ -1,55 +1,53 @@
-import React from 'react'
-import {Formik,Form,ErrorMessage,Field} from 'formik'
-import * as Yup from 'yup'
+import React from 'react';
+import { useFormik } from 'formik';
 
-
-const LoginForm = () => {  
-
-  const validationSchema = Yup.object({
-    email: Yup.string().email("Invalid email address").required("Required"),
-    password: Yup.string().min(6, "Password must be at least 6 characters").required("Required"),
+const LoginForm = () => {
+  // Note that we have to initialize ALL of fields with values. These
+  // could come from props, but since we don’t want to prefill this form,
+  // we just use an empty string. If we don’t do this, React will yell
+  // at us.
+  const {handleSubmit,values, handleChange} = useFormik({
+    initialValues: {
+      firstName: 'Shabir',
+      lastName: '',
+      email: '',
+    },
+    onSubmit: values => {
+      alert(JSON.stringify(values, null, 2));
+    },
   });
-
-  const initialValues = {
-    FullName:"",
-    email: "" ,
-  };
-
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log("Form values:", values);
-    setSubmitting(false);
-  };
-
   return (
-    <div>
-      <Formik>
-      initialValues={initialValues}
-      onSubmit = {handleSubmit}
-      validationSchema = {validationSchema}
-        {({isSubmitting})=>(
-          <Form>
-            <Field
-              type="text"
-              name='FullName'
-              placeholder="Enter Name"
-            />
-            <ErrorMessage name="FullName" component='div'/>
+    <form className='flex flex-col border  p-4  gap-2 rounded-md shadow- bg-transparent' onSubmit={handleSubmit}>
+      <label htmlFor="firstName">First Name</label>
+      <input
+        id="firstName"
+        name="firstName"
+        type="text"
+        onChange={handleChange}
+        value={values.firstName}
+      />
 
-            <Field
-              type="email"
-              name="email"
-              placeholder="Your Gmail"
-            />
-            <ErrorMessage name="email" component='div'/>
+      <label htmlFor="lastName">Last Name</label>
+      <input
+        id="lastName"
+        name="lastName"
+        type="text"
+        onChange={handleChange}
+        value={values.lastName}
+      />
 
-            <button type="submit" disabled={isSubmitting}>
-               Submit
-             </button>
-          </Form>
-        )}
-      </Formik>
-    </div>
-  )
-}
+      <label htmlFor="email">Email Address</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        onChange={handleChange}
+        value={values.email}
+      />
 
-export default LoginForm
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default LoginForm;
